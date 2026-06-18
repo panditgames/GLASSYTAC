@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>GlassTac — Premium Tic Tac Toe</title>
+<meta name="description" content="GlassTac — Luxury emerald glassmorphism Tic Tac Toe with AI, achievements, and stats."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body data-theme="neon">
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- BACKGROUND                                            -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="bg-root">
+  <!-- Big glass spheres like the reference -->
+  <div class="sphere s1"></div>
+  <div class="sphere s2"></div>
+  <div class="sphere s3"></div>
+  <!-- Subtle emerald lens flares -->
+  <div class="flare f1"></div>
+  <div class="flare f2"></div>
+  <!-- Dot grid overlay -->
+  <div class="bg-grid"></div>
+  <!-- Particle canvas -->
+  <canvas id="bg-canvas" class="bg-canvas"></canvas>
+  <!-- Radial vignette -->
+  <div class="bg-vignette"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- LOADING SCREEN                                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="loading-screen" class="loading-screen">
+  <div class="ls-logo">GLASSTAC</div>
+  <div class="ls-sub">PREMIUM TIC TAC TOE EXPERIENCE</div>
+  <div class="ls-bar-wrap">
+    <div class="ls-bar"><div class="ls-fill" id="loader-fill"></div></div>
+  </div>
+  <div class="ls-ring">
+    <svg viewBox="0 0 60 60">
+      <circle class="lsr-track" cx="30" cy="30" r="26"/>
+      <circle class="lsr-arc"   cx="30" cy="30" r="26"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- APP SHELL                                             -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="app" class="app hidden">
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- MENU SCREEN                                     -->
+  <!-- ─────────────────────────────────────────────── -->
+  <section id="menu-screen" class="screen menu-screen active">
+
+    <!-- Floating corner controls -->
+    <div class="hud-corner hud-tl">
+      <button class="hud-btn" id="settings-btn" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+    <div class="hud-corner hud-tr">
+      <button class="hud-btn" id="sound-hud-btn" aria-label="Sound">
+        <svg id="sound-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+    </div>
+
+    <!-- Eyebrow -->
+    <p class="menu-eyebrow">PREMIUM TIC TAC TOE EXPERIENCE</p>
+
+    <!-- ── HERO LOGO — full bleed, cinematic ── -->
+    <div class="hero-wrap" aria-label="GlassTac">
+      <div class="hero-glow-orb"></div>
+      <h1 class="hero-logo" aria-hidden="true" data-text="GLASSTAC">GLASSTAC</h1>
+      <div class="hero-logo-reflect" aria-hidden="true">GLASSTAC</div>
+    </div>
+
+    <!-- ── MENU CARD ── -->
+    <div class="menu-card glass-card">
+
+      <!-- Mode select -->
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="ai">
+          <span class="mode-btn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="2"/></svg>
+          </span>
+          <span class="mode-btn-main">VS AI</span>
+          <span class="mode-btn-sub">Play against AI</span>
+        </button>
+        <button class="mode-btn" data-mode="local">
+          <span class="mode-btn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="17" cy="9" r="3"/><path d="M21 21v-2a3 3 0 0 0-2-2.83"/></svg>
+          </span>
+          <span class="mode-btn-main">LOCAL 2P</span>
+          <span class="mode-btn-sub">Play with a friend</span>
+        </button>
+      </div>
+
+      <!-- Difficulty -->
+      <div id="difficulty-row" class="diff-row">
+        <button class="diff-btn active" data-diff="easy">EASY</button>
+        <button class="diff-btn" data-diff="medium">MEDIUM</button>
+        <button class="diff-btn" data-diff="hard">HARD</button>
+      </div>
+
+      <!-- PLAY -->
+      <button id="play-btn" class="play-btn">
+        <span class="play-btn-shimmer"></span>
+        <span class="play-btn-label">PLAY</span>
+        <span class="play-btn-arrow">▶</span>
+      </button>
+
+      <!-- Bottom nav -->
+      <div class="menu-nav">
+        <button class="nav-btn" id="stats-btn" aria-label="Statistics">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="18" y="3" width="3" height="18"/><rect x="10.5" y="8" width="3" height="13"/><rect x="3" y="13" width="3" height="8"/></svg>
+          <span>STATS</span>
+        </button>
+        <button class="nav-btn" id="achievements-btn" aria-label="Achievements">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+          <span>ACHIEVEMENTS</span>
+        </button>
+        <button class="nav-btn" id="daily-nav-btn" aria-label="Daily Challenge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <span id="dc-nav-label">DAILY</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="menu-footer">
+      <div class="footer-streak">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        <span class="footer-streak-label">BEST STREAK</span>
+        <span class="footer-streak-val" id="footer-best-streak">0</span>
+      </div>
+      <div class="footer-copy">© GLASSTAC</div>
+      <button class="footer-howto" id="howto-btn">HOW TO PLAY ?</button>
+    </div>
+
+  </section>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- GAME SCREEN — reference layout: left score | board | right actions -->
+  <!-- ─────────────────────────────────────────────── -->
+  <section id="game-screen" class="screen game-screen">
+
+    <!-- Top HUD bar -->
+    <div class="game-hud">
+      <button class="hud-btn" id="back-btn" aria-label="Back to menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg>
+      </button>
+
+      <div class="turn-chip" id="turn-indicator">
+        <span class="tc-symbol" id="tc-symbol">✕</span>
+        <span class="tc-text" id="turn-text">YOUR TURN (X)</span>
+        <span class="tc-dot" id="turn-dot"></span>
+      </div>
+
+      <button class="hud-btn" id="stats-game-btn" aria-label="Statistics">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="18" y="3" width="3" height="18"/><rect x="10.5" y="8" width="3" height="13"/><rect x="3" y="13" width="3" height="8"/></svg>
+      </button>
+    </div>
+
+    <!-- Main game area: left sidebar + board + right sidebar -->
+    <div class="game-area">
+
+      <!-- LEFT: Scoreboard -->
+      <div class="game-sidebar game-sidebar-left">
+        <div class="score-card x-card" id="score-x-card">
+          <div class="sc-label" id="score-x-label">YOU (X)</div>
+          <div class="sc-value" id="score-x">0</div>
+        </div>
+        <div class="score-card draw-card">
+          <div class="sc-label">DRAWS</div>
+          <div class="sc-value" id="score-draw">0</div>
+        </div>
+        <div class="score-card o-card" id="score-o-card">
+          <div class="sc-label" id="score-o-label">AI (O)</div>
+          <div class="sc-value" id="score-o">0</div>
+        </div>
+        <div class="score-card streak-card">
+          <div class="sc-label">BEST STREAK <span class="streak-fire">🔥</span></div>
+          <div class="sc-value streak-val" id="sidebar-best-streak">0</div>
+        </div>
+      </div>
+
+      <!-- CENTER: Board -->
+      <div class="game-center">
+        <div class="board-outer">
+          <div class="board" id="board" role="grid" aria-label="Tic Tac Toe board">
+            <button class="cell" role="gridcell" data-index="0" tabindex="0" aria-label="Cell 1"></button>
+            <button class="cell" role="gridcell" data-index="1" tabindex="0" aria-label="Cell 2"></button>
+            <button class="cell" role="gridcell" data-index="2" tabindex="0" aria-label="Cell 3"></button>
+            <button class="cell" role="gridcell" data-index="3" tabindex="0" aria-label="Cell 4"></button>
+            <button class="cell" role="gridcell" data-index="4" tabindex="0" aria-label="Cell 5"></button>
+            <button class="cell" role="gridcell" data-index="5" tabindex="0" aria-label="Cell 6"></button>
+            <button class="cell" role="gridcell" data-index="6" tabindex="0" aria-label="Cell 7"></button>
+            <button class="cell" role="gridcell" data-index="7" tabindex="0" aria-label="Cell 8"></button>
+            <button class="cell" role="gridcell" data-index="8" tabindex="0" aria-label="Cell 9"></button>
+            <svg class="winline" id="winline" viewBox="0 0 300 300" preserveAspectRatio="none">
+              <line id="winline-line" x1="0" y1="0" x2="0" y2="0"/>
+            </svg>
+          </div>
+        </div>
+        <!-- Streak badge below board -->
+        <div class="streak-banner" id="streak-banner"></div>
+      </div>
+
+      <!-- RIGHT: Action buttons -->
+      <div class="game-sidebar game-sidebar-right">
+        <button class="action-btn" id="restart-btn" aria-label="Restart round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          <span>RESTART</span>
+        </button>
+        <button class="action-btn" id="new-match-btn" aria-label="New Match">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+          <span>NEW MATCH</span>
+        </button>
+        <button class="action-btn" id="restart-match-btn" aria-label="Undo / Restart">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+          <span>UNDO</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- VICTORY OVERLAY                                 -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="victory-overlay" class="overlay">
+    <div class="victory-card" id="victory-panel">
+      <canvas id="confetti-canvas"></canvas>
+
+      <div class="vc-content">
+        <!-- Big glowing winner symbol (like reference) -->
+        <div class="vc-symbol-wrap" id="vc-symbol-wrap">
+          <div class="vc-symbol-glow"></div>
+          <div class="vc-symbol" id="victory-icon">✕</div>
+        </div>
+
+        <div class="vc-title" id="victory-title">YOU WON!</div>
+        <div class="vc-sub"   id="victory-subtitle">Great move!</div>
+
+        <!-- Stats strip -->
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-val" id="vss-streak">0</div>
+            <div class="vc-stat-label">STREAK</div>
+          </div>
+          <div class="vc-stat-div"></div>
+          <div class="vc-stat">
+            <div class="vc-stat-val" id="vss-best">0</div>
+            <div class="vc-stat-label">BEST</div>
+          </div>
+          <div class="vc-stat-div"></div>
+          <div class="vc-stat">
+            <div class="vc-stat-val" id="vss-winrate">0%</div>
+            <div class="vc-stat-label">WIN RATE</div>
+          </div>
+        </div>
+
+        <!-- Achievement progress -->
+        <div class="vc-ach">
+          <div class="vc-ach-row">
+            <span class="vc-ach-label">Achievements</span>
+            <span class="vc-ach-count" id="vap-count">0 / 6</span>
+          </div>
+          <div class="vc-ach-track"><div class="vc-ach-fill" id="vap-fill"></div></div>
+        </div>
+
+        <!-- Streak text (populated by JS) -->
+        <div class="vc-streak" id="victory-streak"></div>
+
+        <!-- Buttons — match reference exactly -->
+        <div class="vc-actions">
+          <button class="vc-btn-play" id="next-round-btn">PLAY AGAIN</button>
+          <button class="vc-btn-menu" id="v-menu-link">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- SETTINGS OVERLAY                                -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="settings-overlay" class="overlay">
+    <div class="glass-card side-panel">
+      <div class="panel-header">
+        <h2>Settings</h2>
+        <button class="hud-btn close-btn" data-close="settings-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="setting-row">
+        <span>Sound Effects</span>
+        <label class="switch"><input type="checkbox" id="sound-toggle" checked/><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <span>Animations</span>
+        <label class="switch"><input type="checkbox" id="anim-toggle" checked/><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <span>Board Theme</span>
+        <div class="theme-swatches" id="theme-swatches">
+          <button class="swatch active" data-theme="neon"   style="--c1:#00FF9D;--c2:#7CFFCB" title="Emerald"></button>
+          <button class="swatch"        data-theme="sunset" style="--c1:#f97316;--c2:#ec4899" title="Sunset"></button>
+          <button class="swatch"        data-theme="violet" style="--c1:#7c3aed;--c2:#06b6d4" title="Violet"></button>
+          <button class="swatch"        data-theme="mono"   style="--c1:#94a3b8;--c2:#e2e8f0" title="Mono"></button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span>Light Background</span>
+        <label class="switch"><input type="checkbox" id="bg-toggle"/><span class="slider"></span></label>
+      </div>
+      <button class="btn-danger" id="reset-stats-btn">Reset All Statistics</button>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- STATS OVERLAY                                   -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="stats-overlay" class="overlay">
+    <div class="glass-card side-panel wide-panel">
+      <div class="panel-header">
+        <h2>Statistics</h2>
+        <button class="hud-btn close-btn" data-close="stats-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <!-- 4-column grid like reference -->
+      <div class="stats-grid4">
+        <div class="stat-box"><div class="stat-num" id="stat-played">0</div><div class="stat-lbl">TOTAL GAMES</div></div>
+        <div class="stat-box"><div class="stat-num accent-green" id="stat-wins">0</div><div class="stat-lbl">WINS</div></div>
+        <div class="stat-box"><div class="stat-num accent-pink" id="stat-losses">0</div><div class="stat-lbl">LOSSES</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-draws">0</div><div class="stat-lbl">DRAWS</div></div>
+      </div>
+      <div class="stats-grid4" style="margin-top:10px">
+        <div class="stat-box"><div class="stat-num accent-green" id="stat-winrate">0%</div><div class="stat-lbl">WIN RATE</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-beststreak">0</div><div class="stat-lbl">BEST STREAK</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl">CURRENT STREAK</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-ach-count">0/6</div><div class="stat-lbl">ACHIEVEMENTS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- ACHIEVEMENTS OVERLAY                            -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="achievements-overlay" class="overlay">
+    <div class="glass-card side-panel">
+      <div class="panel-header">
+        <h2>Achievements</h2>
+        <button class="hud-btn close-btn" data-close="achievements-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="achievements-list" id="achievements-list"></div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- DAILY CHALLENGE OVERLAY                         -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="daily-overlay" class="overlay">
+    <div class="glass-card side-panel">
+      <div class="panel-header">
+        <h2>Daily Challenge</h2>
+        <button class="hud-btn close-btn" data-close="daily-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="daily-card">
+        <div class="daily-icon">🎯</div>
+        <div class="daily-title">Today's Challenge</div>
+        <div class="daily-desc" id="dc-status">Win a match on Hard AI today!</div>
+        <div class="daily-status" id="dc-check">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- HOW TO PLAY OVERLAY                             -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="howto-overlay" class="overlay">
+    <div class="glass-card side-panel">
+      <div class="panel-header">
+        <h2>How to Play</h2>
+        <button class="hud-btn close-btn" data-close="howto-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="howto-list">
+        <div class="howto-step"><span class="howto-num">01</span><span>Take turns placing X or O on the 3×3 grid.</span></div>
+        <div class="howto-step"><span class="howto-num">02</span><span>First player to get 3 in a row wins — horizontally, vertically, or diagonally.</span></div>
+        <div class="howto-step"><span class="howto-num">03</span><span>If all 9 squares are filled with no winner, the game is a draw.</span></div>
+        <div class="howto-step"><span class="howto-num">04</span><span>Choose AI difficulty: Easy is random, Medium is strategic, Hard is unbeatable minimax.</span></div>
+        <div class="howto-step"><span class="howto-num">05</span><span>Complete the Daily Challenge — beat Hard AI once per day — to earn a special badge.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- ACHIEVEMENT TOAST                               -->
+  <!-- ─────────────────────────────────────────────── -->
+  <div id="achievement-toast" class="ach-toast" role="alert" aria-live="polite">
+    <div class="ach-toast-glow"></div>
+    <span class="ach-toast-icon" id="toast-icon">🏆</span>
+    <div class="ach-toast-text">
+      <strong>Achievement Unlocked</strong>
+      <span id="toast-name">First Victory</span>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script src="script.js"></script>
+<script>
+/* Victory + stats sync shim */
+document.addEventListener('DOMContentLoaded', () => {
+  const vo = document.getElementById('victory-overlay');
+  function syncVictory() {
+    const s = document.getElementById('stat-streak');
+    const b = document.getElementById('stat-beststreak');
+    const r = document.getElementById('stat-winrate');
+    if(s) document.getElementById('vss-streak').textContent = s.textContent;
+    if(b) document.getElementById('vss-best').textContent   = b.textContent;
+    if(r) document.getElementById('vss-winrate').textContent= r.textContent;
+    const list = document.getElementById('achievements-list');
+    if(list) {
+      const u = list.querySelectorAll('.achievement-item:not(.locked)').length;
+      const f = document.getElementById('vap-fill');
+      const c = document.getElementById('vap-count');
+      if(f) f.style.width = Math.round((u/6)*100)+'%';
+      if(c) c.textContent = u+' / 6';
+      const sa = document.getElementById('stat-ach-count');
+      if(sa) sa.textContent = u+'/6';
+    }
+  }
+  if(vo) {
+    new MutationObserver(ms => ms.forEach(m => {
+      if(m.target===vo && vo.classList.contains('show')) { syncVictory(); setTimeout(syncVictory,80); }
+    })).observe(vo,{attributes:true,attributeFilter:['class']});
+  }
+  // Sync footer best streak from stat panel
+  function syncFooter() {
+    const b = document.getElementById('stat-beststreak');
+    const f = document.getElementById('footer-best-streak');
+    const sb = document.getElementById('sidebar-best-streak');
+    if(b && f) f.textContent = b.textContent;
+    if(b && sb) sb.textContent = b.textContent;
+  }
+  // Observe stat overlay open
+  const so = document.getElementById('stats-overlay');
+  if(so) new MutationObserver(()=>syncFooter()).observe(so,{attributes:true,attributeFilter:['class']});
+  // Also sync on victory
+  if(vo) new MutationObserver(()=>syncFooter()).observe(vo,{attributes:true,attributeFilter:['class']});
+});
+</script>
+
+</body>
+</html>
